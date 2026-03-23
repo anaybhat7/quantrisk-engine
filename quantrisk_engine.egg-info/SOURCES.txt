@@ -1,6 +1,0 @@
-setup.py
-quantrisk_engine.egg-info/PKG-INFO
-quantrisk_engine.egg-info/SOURCES.txt
-quantrisk_engine.egg-info/dependency_links.txt
-quantrisk_engine.egg-info/requires.txt
-quantrisk_engine.egg-info/top_level.txt

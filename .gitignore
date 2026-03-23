@@ -13,3 +13,7 @@ data/cache/
 
 # OS files
 .DS_Store
+
+*.egg-info/
+build/
+dist/
