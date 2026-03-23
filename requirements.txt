@@ -1,0 +1,8 @@
+pandas
+numpy
+yfinance
+fredapi
+python-dotenv
+pyarrow
+fastparquet
+scikit-learn

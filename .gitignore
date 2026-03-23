@@ -1,19 +1,9 @@
-# Virtual Environment
-venv/
 .env
-
-# Python Cache
+.vscode
+data/parquet_cache/
 __pycache__/
 *.pyc
-
-# Data & Cache (This is huge for your ORIE project)
-data/cache/
-*.parquet
-*.csv
-
-# OS files
-.DS_Store
-
-*.egg-info/
-build/
+.pytest_cache/
 dist/
+build/
+*.egg-info/
