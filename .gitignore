@@ -1,9 +1,11 @@
 .env
+.venv/
 .vscode
 data/parquet_cache/
 __pycache__/
 *.pyc
 .pytest_cache/
+.coverage
 dist/
 build/
 *.egg-info/
