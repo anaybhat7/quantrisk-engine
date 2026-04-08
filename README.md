@@ -14,7 +14,7 @@ Final Project for ORIE 5270: Big Data Technologies.
 
 ---
 
-## 2. Dataset & "Big Data" Tech Stack
+## 2. Dataset & Big Data Tech Stack
 To satisfy the ORIE 5270 "Real Dataset" requirement, the engine integrates:
 * **Market Data:** Live ingestion of $N$-asset price series via the `yfinance` API.
 * **Macro Indicators:** Integration with the **FRED (Federal Reserve Economic Data) API** to pull interest rate and inflation factors for stress testing.
@@ -33,8 +33,9 @@ Expected Shortfall addresses the "average loss" in the tail beyond the $VaR$ thr
 $$ES_{\alpha} = E[L \mid L > VaR_{\alpha}]$$
 
 ### Marginal Contribution to Risk (MCTR)
-Determines the sensitivity of portfolio volatility to a \$1 change in an asset's weight:
-$$MCTR_i = \frac{(\Sigma w)_i}{\sigma_p}$$
+Determines the sensitivity of the total portfolio volatility to a marginal change in an asset's weight (e.g., adding $1 to a specific position):
+$$MCTR_i = \frac{\partial \sigma_p}{\partial w_i} = \frac{(\Sigma w)_i}{\sigma_p}$$
+*(Where $\Sigma$ is the covariance matrix, $w$ is the weight vector, and $\sigma_p$ is the portfolio volatility).*
 
 
 ---
@@ -59,7 +60,7 @@ pip install -e ".[dev]"
 
 ## 5. Usage & Execution
 ### Running Tests (High Coverage)
-The engine maintains **89% unit-test coverage**, verifying math logic, API failure handling, and dimension alignment.
+The engine maintains **99% unit-test coverage**, verifying math logic, API failure handling, and dimension alignment.
 ```bash
 python -m pytest --cov=engine tests/
 ```
@@ -79,7 +80,7 @@ The provided `backtest.py` script generates a performance visualization and a st
 
 ### Graph Interpretation:
 * **The Blue Line (Daily Returns):** Represents the realized daily PnL of the portfolio.
-* **The Red Dashed Line ($VaR$ Envelope):** This is the "Risk Floor." Notice how it "jumps" during high-volatility periods (e.g., late 2024). This shows the model is adapting to new volatility regimes.
+* **The Red Dashed Line ($VaR$ Envelope):** This is the "Risk Floor." Notice how it jumps during high-volatility periods (e.g., late 2024). This shows the model is adapting to new volatility regimes.
 * **Black Dots (Exceptions):** These occur when the actual loss exceeds the $VaR$ estimate.
 
 ### Statistical Analysis (Results: 5.77% vs 5.00% Target)
@@ -100,4 +101,7 @@ quantrisk-engine/
 ├── setup.py        # Package Installation Configuration
 └── .env            # Secure API Key Storage
 ```
+
+
+
 
