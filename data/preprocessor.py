@@ -16,7 +16,7 @@ class DataPreprocessor:
         if method == 'dropna':
             return df.dropna()
         elif method == 'ffill':
-            return df.fillna(method='ffill').dropna()
+            return df.ffill().dropna()
         else:
             raise ValueError("Method must be 'dropna' or 'ffill'")
 

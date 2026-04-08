@@ -3,6 +3,7 @@ import numpy as np
 from data.fetcher import DataFetcher
 from data.preprocessor import DataPreprocessor
 from engine.estimators import RiskEstimator
+from utils.reporter import save_backtest_outputs
 import matplotlib.pyplot as plt
 
 def run_backtest(tickers, weights, confidence_level=0.95, window=252):
@@ -73,8 +74,82 @@ def run_backtest(tickers, weights, confidence_level=0.95, window=252):
     plt.legend()
     plt.show()
 
+
+def run_advanced_backtest(tickers, weights, confidence_level=0.99, window=252):
+    """
+    Advanced Backtest: Calculates VaR and Expected Shortfall for Long/Short portfolios.
+    Saves outputs automatically.
+    """
+    fetcher = DataFetcher()
+    raw_data = fetcher.fetch_stock_prices(tickers)
+    
+    preprocessor = DataPreprocessor()
+    returns = preprocessor.get_risk_ready_data(raw_data)
+    
+    # Portfolio returns handle negative weights (shorting) automatically via dot product
+    portfolio_rets = returns.dot(weights)
+    
+    results = []
+    actual_returns = portfolio_rets.iloc[window:]
+    
+    print(f"Running Advanced Backtest for {len(actual_returns)} days at {confidence_level*100}% confidence...")
+    
+    for i in range(window, len(portfolio_rets)):
+        lookback_slice = returns.iloc[i-window:i]
+        estimator = RiskEstimator(lookback_slice, weights)
+        
+        h_var = estimator.historical_var(confidence_level)
+        h_es = estimator.expected_shortfall(confidence_level)
+        actual_ret = portfolio_rets.iloc[i]
+        
+        is_exception = 1 if actual_ret < -h_var else 0
+        
+        results.append({
+            'Date': portfolio_rets.index[i],
+            'Actual_Return': actual_ret,
+            'VaR_99': -h_var,
+            'ES_99': -h_es,
+            'Exception': is_exception
+        })
+
+    backtest_df = pd.DataFrame(results).set_index('Date')
+    total_exceptions = backtest_df['Exception'].sum()
+    failure_rate = total_exceptions / len(backtest_df)
+    
+    # Format the report string
+    report_text = (
+        f"--- ADVANCED BACKTEST SUMMARY ---\n"
+        f"Assets: {tickers}\n"
+        f"Weights: {weights} (Note negative values = short positions)\n"
+        f"Confidence Level: {confidence_level*100}%\n"
+        f"Total Trading Days Tested: {len(backtest_df)}\n"
+        f"Exceptions (Breaches): {total_exceptions}\n"
+        f"Failure Rate: {failure_rate:.2%}\n"
+        f"Target Rate: {1 - confidence_level:.2%}\n"
+        f"---------------------------------\n"
+    )
+    print(report_text)
+
+    # Visualization
+    fig, ax = plt.subplots(figsize=(14, 7))
+    ax.plot(backtest_df.index, backtest_df['Actual_Return'], label='Daily Return', alpha=0.4, color='gray')
+    ax.plot(backtest_df.index, backtest_df['VaR_99'], label='99% VaR Limit', color='orange', linestyle='--')
+    ax.plot(backtest_df.index, backtest_df['ES_99'], label='99% Expected Shortfall', color='red', linestyle='-.')
+    
+    exceptions = backtest_df[backtest_df['Exception'] == 1]
+    ax.scatter(exceptions.index, exceptions['Actual_Return'], color='black', label='VaR Exception', zorder=5)
+    
+    ax.set_title(f"Advanced Risk Backtest (Long/Short Multi-Asset)")
+    ax.set_ylabel("Daily Return")
+    ax.legend()
+    
+    save_backtest_outputs(fig, report_text, prefix="long_short_99")
+    plt.show()
+
 if __name__ == "__main__":
-    # Example: A 60/40 Equity/Tech portfolio
-    my_tickers = ['SPY', 'QQQ']
-    my_weights = [0.6, 0.4]
-    run_backtest(my_tickers, my_weights)
+    # A complex portfolio: Long SPY (50%), Short QQQ (-20%), Long Treasury Bonds (40%), Long Gold (30%)
+    # Note: 0.5 - 0.2 + 0.4 + 0.3 = 1.0 Total Exposure
+    adv_tickers = ['SPY', 'QQQ', 'TLT', 'GLD']
+    adv_weights = [0.5, -0.2, 0.4, 0.3]
+    
+    run_advanced_backtest(adv_tickers, adv_weights, confidence_level=0.99)

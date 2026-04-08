@@ -1,0 +1,9 @@
+--- ADVANCED BACKTEST SUMMARY ---
+Assets: ['SPY', 'QQQ', 'TLT', 'GLD']
+Weights: [0.5, -0.2, 0.4, 0.3] (Note negative values = short positions)
+Confidence Level: 99.0%
+Total Trading Days Tested: 1068
+Exceptions (Breaches): 20
+Failure Rate: 1.87%
+Target Rate: 1.00%
+---------------------------------
