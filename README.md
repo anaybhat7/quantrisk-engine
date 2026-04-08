@@ -32,11 +32,12 @@ $$VaR_{\alpha} = \mu_p - z_{\alpha} \sigma_p$$
 Expected Shortfall addresses the "average loss" in the tail beyond the $VaR$ threshold:
 $$ES_{\alpha} = E[L \mid L > VaR_{\alpha}]$$
 
-### Marginal Contribution to Risk (MCTR)
-Determines the sensitivity of the total portfolio volatility to a marginal change in an asset's weight (e.g., adding $1 to a specific position):
-$$MCTR_i = \frac{\partial \sigma_p}{\partial w_i} = \frac{(\Sigma w)_i}{\sigma_p}$$
-*(Where $\Sigma$ is the covariance matrix, $w$ is the weight vector, and $\sigma_p$ is the portfolio volatility).*
+#### Marginal Contribution to Risk (MCTR)
+Determines the sensitivity of the total portfolio volatility to a marginal change in an asset's weight (e.g., adding \$1 to a specific position):
 
+$$MCTR_i = \frac{\partial \sigma_p}{\partial w_i} = \frac{(\Sigma w)_i}{\sigma_p}$$
+
+*(Where $\Sigma$ is the covariance matrix, $w$ is the weight vector, and $\sigma_p$ is the portfolio volatility).*
 
 ---
 
